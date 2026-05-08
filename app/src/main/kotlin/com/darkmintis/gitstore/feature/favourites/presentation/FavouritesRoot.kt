@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -52,10 +51,6 @@ fun FavouritesRoot(
         state = state,
         onAction = { action ->
             when (action) {
-                FavouritesAction.OnNavigateBackClick -> {
-                    onNavigateBack()
-                }
-
                 is FavouritesAction.OnRepositoryClick -> {
                     onNavigateToDetails(action.favouriteRepository.repoId)
                 }
@@ -140,20 +135,6 @@ private fun FavouritesTopbar(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-        },
-        navigationIcon = {
-            IconButton(
-                shapes = IconButtonDefaults.shapes(),
-                onClick = {
-                    onAction(FavouritesAction.OnNavigateBackClick)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.navigate_back),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
         }
     )
 }

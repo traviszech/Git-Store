@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
@@ -103,10 +102,6 @@ fun SearchRoot(
             when (action) {
                 is SearchAction.OnRepositoryClick -> {
                     onNavigateToDetails(action.repository)
-                }
-
-                SearchAction.OnNavigateBackClick -> {
-                    onNavigateBack()
                 }
 
                 is SearchAction.OnRepositoryDeveloperClick -> {
@@ -346,16 +341,6 @@ private fun SearchTopbar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        IconButton(
-            onClick = { onAction(SearchAction.OnNavigateBackClick) }
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.navigate_back),
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
         TextField(
             value = state.query,
             onValueChange = { value ->

@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
@@ -122,10 +121,6 @@ fun AppsRoot(
         state = state,
         onAction = { action ->
             when (action) {
-                AppsAction.OnNavigateBackClick -> {
-                    onNavigateBack()
-                }
-
                 else -> {
                     viewModel.onAction(action)
                 }
@@ -144,16 +139,6 @@ fun AppsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                navigationIcon = {
-                    IconButton(
-                        onClick = { onAction(AppsAction.OnNavigateBackClick) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.navigate_back)
-                        )
-                    }
-                },
                 title = {
                     Text(
                         text = stringResource(R.string.installed_apps),
