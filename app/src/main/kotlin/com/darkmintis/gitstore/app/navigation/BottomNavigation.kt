@@ -9,9 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.darkmintis.gitstore.core.domain.getPlatform
-import com.darkmintis.gitstore.core.domain.model.PlatformType
-
 @Composable
 fun BottomNavigation(
     currentScreen: GithubStoreGraph,
@@ -26,10 +23,6 @@ fun BottomNavigation(
         ) {
             BottomNavigationUtils
                 .items()
-                .filterNot {
-                    getPlatform().type != PlatformType.ANDROID &&
-                            it.screen == GithubStoreGraph.AppsScreen
-                }
                 .forEach { item ->
                     NavigationBarItem(
                         icon = {
