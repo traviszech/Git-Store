@@ -18,7 +18,6 @@ import com.darkmintis.gitstore.core.data.repository.FavouritesRepositoryImpl
 import com.darkmintis.gitstore.core.data.repository.InstalledAppsRepositoryImpl
 import com.darkmintis.gitstore.core.data.repository.StarredRepositoryImpl
 import com.darkmintis.gitstore.core.data.repository.ThemesRepositoryImpl
-import com.darkmintis.gitstore.core.domain.getPlatform
 import com.darkmintis.gitstore.core.domain.repository.FavouritesRepository
 import com.darkmintis.gitstore.core.domain.repository.InstalledAppsRepository
 import com.darkmintis.gitstore.core.domain.repository.ThemesRepository
@@ -72,9 +71,6 @@ val coreModule: Module = module {
         )
     }
 
-    // Platform
-    single { getPlatform() }
-
     // HTTP Client
     single {
         buildAuthedGitHubHttpClient(
@@ -103,8 +99,7 @@ val coreModule: Module = module {
     single<SyncInstalledAppsUseCase> {
         SyncInstalledAppsUseCase(
             packageMonitor = get(),
-            installedAppsRepository = get(),
-            platform = get()
+            installedAppsRepository = get()
         )
     }
 
@@ -135,8 +130,7 @@ val coreModule: Module = module {
             themesRepository = get(),
             appStateManager = get(),
             installedAppsRepository = get(),
-            packageMonitor = get(),
-            platform = get()
+            packageMonitor = get()
         )
     }
 }
@@ -164,16 +158,13 @@ val homeModule: Module = module {
     single<HomeRepository> {
         HomeRepositoryImpl(
             githubNetworkClient = get(),
-            platform = get(),
             appStateManager = get(),
             cachedDataSource = get()
         )
     }
 
     single<CachedTrendingDataSource> {
-        CachedTrendingDataSource(
-            platform = get()
-        )
+        CachedTrendingDataSource()
     }
 
     // ViewModel
@@ -182,7 +173,6 @@ val homeModule: Module = module {
             application = get(),
             homeRepository = get(),
             installedAppsRepository = get(),
-            platform = get(),
             syncInstalledAppsUseCase = get(),
             favouritesRepository = get(),
             starredRepository = get()
@@ -239,7 +229,6 @@ val detailsModule: Module = module {
             detailsRepository = get(),
             downloader = get<Downloader>(),
             installer = get<Installer>(),
-            platform = get(),
             helper = get(),
             installedAppsRepository = get(),
             favouritesRepository = get(),
@@ -255,7 +244,6 @@ val repoAuthorModule: Module = module {
     single<DeveloperProfileRepository> {
         DeveloperProfileRepositoryImpl(
             httpClient = get(),
-            platform = get(),
             installedAppsDao = get(),
             favouritesRepository = get()
         )
@@ -295,8 +283,7 @@ val starredReposModule: Module = module {
         StarredRepositoryImpl(
             httpClient = get(),
             dao = get(),
-            installedAppsDao = get(),
-            platform = get()
+            installedAppsDao = get()
         )
     }
 
@@ -329,7 +316,6 @@ val appsModule: Module = module {
             downloader = get(),
             packageMonitor = get(),
             detailsRepository = get(),
-            platform = get(),
             syncInstalledAppsUseCase = get(),
             application = get()
         )
