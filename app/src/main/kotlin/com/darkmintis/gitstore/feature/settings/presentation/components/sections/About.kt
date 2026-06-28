@@ -3,26 +3,31 @@ package com.darkmintis.gitstore.feature.settings.presentation.components.section
 import com.darkmintis.gitstore.R
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -81,52 +86,75 @@ fun LazyListScope.about(
 
             AboutItem(
                 icon = Icons.Filled.SystemUpdate,
-                title = stringResource(R.string.check_for_updates),
+                title = stringResource(R.string.updates),
                 actions = {
-                    val actionText = when {
-                        state.isCheckingGitStoreUpdate -> stringResource(R.string.checking)
-                        state.isGitStoreUpdateAvailable -> stringResource(
-                            R.string.update_to_version,
-                            state.latestGitStoreVersion ?: ""
-                        )
-                        else -> stringResource(R.string.check_now)
-                    }
-
-                    TextButton(
-                        onClick = {
-                            if (state.isGitStoreUpdateAvailable && !state.latestGitStoreDownloadUrl.isNullOrBlank()) {
-                                onAction(
-                                    SettingsAction.OnBrowserOpen(
-                                        url = state.latestGitStoreDownloadUrl,
-                                        useChooser = false
-                                    )
+                    when {
+                        state.isCheckingGitStoreUpdate -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                        state.isDownloadingUpdate -> {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                LinearProgressIndicator(
+                                    progress = { (state.updateDownloadProgress ?: 0) / 100f },
+                                    modifier = Modifier.width(80.dp)
                                 )
-                            } else {
-                                onAction(SettingsAction.OnCheckGitStoreUpdateClick)
+                                Text(
+                                    text = "${state.updateDownloadProgress ?: 0}%",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
                             }
-                        },
-                        enabled = !state.isCheckingGitStoreUpdate
-                    ) {
-                        Text(text = actionText)
+                        }
+                        state.isGitStoreUpdateAvailable -> {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.update_to_version, state.latestGitStoreVersion ?: ""),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.outline,
+                                )
+                                TextButton(onClick = { onAction(SettingsAction.OnUpdateGitStoreClick) }) {
+                                    Text(stringResource(R.string.update))
+                                }
+                            }
+                        }
+                        state.updateDownloadError != null || state.gitStoreUpdateErrorMessage != null -> {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = state.updateDownloadError ?: stringResource(R.string.update_check_failed),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                        else -> {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = stringResource(R.string.up_to_date),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.outline,
+                                )
+                            }
+                        }
                     }
                 }
-            )
-
-            val updateStatusText = when {
-                state.isCheckingGitStoreUpdate -> stringResource(R.string.checking)
-                state.gitStoreUpdateErrorMessage != null -> stringResource(R.string.update_check_failed)
-                state.isGitStoreUpdateAvailable -> stringResource(R.string.update_available)
-                else -> stringResource(R.string.no_updates_available)
-            }
-
-            Text(
-                text = updateStatusText,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.outline,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
             )
 
             HorizontalDivider()
