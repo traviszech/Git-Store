@@ -15,5 +15,8 @@ data class SettingsState(
     val latestGitStoreVersion: String? = null,
     val latestGitStoreDownloadUrl: String? = null,
     val gitStoreUpdateErrorMessage: String? = null,
+    val isDownloadingUpdate: Boolean = false,
+    val updateDownloadProgress: Int? = null,
+    val updateDownloadError: String? = null,
 )
 
